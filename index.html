@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entrega Rápida</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial;
+  background: linear-gradient(135deg, #0f9b0f, #000);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* CARD RESPONSIVO */
+.card {
+  background: white;
+  width: 100%;
+  max-width: 420px;
+  padding: 20px;
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+/* ICON */
+.icon {
+  font-size: 42px;
+  color: #0f9b0f;
+}
+
+/* INPUT */
+input {
+  width: 100%;
+  padding: 14px;
+  margin-top: 15px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+}
+
+/* BOTÃO */
+button {
+  width: 100%;
+  padding: 15px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 12px;
+  background: #0f9b0f;
+  color: white;
+  font-size: 16px;
+}
+
+/* LOADING */
+.loading {
+  display: none;
+  margin-top: 15px;
+}
+
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 4px solid #eee;
+  border-top: 4px solid #0f9b0f;
+  border-radius: 50%;
+  margin: 10px auto;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+/* MODAL RESPONSIVO */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.modal-box {
+  background: white;
+  width: 100%;
+  max-width: 320px;
+  padding: 20px;
+  border-radius: 14px;
+  text-align: center;
+}
+
+/* MELHOR PARA TELAS PEQUENAS */
+@media (max-width: 400px) {
+
+  .card {
+    padding: 15px;
+    border-radius: 14px;
+  }
+
+  .icon {
+    font-size: 36px;
+  }
+
+  input, button {
+    font-size: 15px;
+    padding: 12px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <div class="icon">
+    <i class="fa-solid fa-location-dot"></i>
+  </div>
+
+  <h2>Enviar Localização</h2>
+
+  <input id="ref" placeholder="Referência da casa">
+
+  <button onclick="openModal()">Enviar localização</button>
+
+  <div class="loading" id="loading">
+    <p>📡 A obter localização...</p>
+    <div class="spinner"></div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <i class="fa-solid fa-location-dot" style="font-size:40px;color:#0f9b0f"></i>
+    <h3>Permitir localização</h3>
+    <p>Precisamos da tua localização para entregar corretamente.</p>
+    <button onclick="getGPS()">Continuar</button>
+  </div>
+</div>
+
+<script>
+
+function openModal() {
+  document.getElementById("modal").style.display = "flex";
+}
+
+function getGPS() {
+
+  document.getElementById("modal").style.display = "none";
+
+  let ref = document.getElementById("ref").value;
+
+  if (!navigator.geolocation) {
+    alert("GPS não suportado");
+    return;
+  }
+
+  document.getElementById("loading").style.display = "block";
+
+  navigator.geolocation.getCurrentPosition(function(pos) {
+
+    let lat = pos.coords.latitude;
+    let lon = pos.coords.longitude;
+
+    let msg =
+`📍 Entrega:
+https://www.google.com/maps?q=${lat},${lon}
+🏠 Referência: ${ref}`;
+
+    let numero = "244931115654";
+
+    let url = "https://wa.me/" + numero + "?text=" + encodeURIComponent(msg);
+
+    window.open(url, "_blank");
+
+    document.getElementById("loading").style.display = "none";
+
+  }, function() {
+    document.getElementById("loading").style.display = "none";
+    alert("Permita a localização para continuar");
+  });
+
+}
+
+</script>
+
+</body>
+</html>
