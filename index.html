@@ -186,7 +186,9 @@ https://www.google.com/maps?q=${lat},${lon}
 
     let url = "https://wa.me/" + numero + "?text=" + encodeURIComponent(msg);
 
-    window.open(url, "_blank");
+    setTimeout(() => {
+   window.location.href = url;
+    }, 300);
 
     document.getElementById("loading").style.display = "none";
 
