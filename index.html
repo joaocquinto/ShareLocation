@@ -15,29 +15,65 @@
 body {
   margin: 0;
   font-family: Arial;
-  background: linear-gradient(135deg, #0f9b0f, #000);
+
+  /* IMAGEM DE FUNDO */
+  background-image: url('/WhatsApp Imnage 2026-05-06 at 7.24.28 PM.jpeg');
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
+  position: relative;
+}
+
+/* OVERLAY ESCURO */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 0;
 }
 
 /* CARD RESPONSIVO */
 .card {
-  background: white;
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(6px);
+
   width: 100%;
   max-width: 420px;
-  padding: 20px;
-  border-radius: 18px;
+  padding: 22px;
+  border-radius: 20px;
   text-align: center;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+
+  position: relative;
+  z-index: 1;
 }
 
 /* ICON */
 .icon {
   font-size: 42px;
   color: #0f9b0f;
+  margin-bottom: 10px;
+}
+
+/* TÍTULO */
+h2 {
+  margin-bottom: 5px;
+  color: #111;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 18px;
 }
 
 /* INPUT */
@@ -45,9 +81,16 @@ input {
   width: 100%;
   padding: 14px;
   margin-top: 15px;
-  border-radius: 10px;
+  border-radius: 12px;
   border: 1px solid #ddd;
   font-size: 16px;
+  outline: none;
+  transition: 0.2s;
+}
+
+input:focus {
+  border-color: #0f9b0f;
+  box-shadow: 0 0 0 4px rgba(15,155,15,0.1);
 }
 
 /* BOTÃO */
@@ -56,67 +99,116 @@ button {
   padding: 15px;
   margin-top: 15px;
   border: none;
-  border-radius: 12px;
+  border-radius: 14px;
   background: #0f9b0f;
   color: white;
   font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  transform: scale(1.02);
+  background: #0c850c;
 }
 
 /* LOADING */
 .loading {
   display: none;
-  margin-top: 15px;
+  margin-top: 18px;
 }
 
+.loading p {
+  color: #444;
+  font-size: 14px;
+}
+
+/* SPINNER */
 .spinner {
-  width: 30px;
-  height: 30px;
+  width: 34px;
+  height: 34px;
   border: 4px solid #eee;
   border-top: 4px solid #0f9b0f;
   border-radius: 50%;
-  margin: 10px auto;
+  margin: 12px auto;
   animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  100% { transform: rotate(360deg); }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-/* MODAL RESPONSIVO */
+/* MODAL */
 .modal {
   display: none;
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.6);
+
   justify-content: center;
   align-items: center;
+
   padding: 20px;
+
+  z-index: 999;
 }
 
 .modal-box {
   background: white;
   width: 100%;
   max-width: 320px;
-  padding: 20px;
-  border-radius: 14px;
+  padding: 24px;
+  border-radius: 18px;
   text-align: center;
+  animation: pop 0.25s ease;
 }
 
-/* MELHOR PARA TELAS PEQUENAS */
+@keyframes pop {
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.modal-box i {
+  font-size: 42px;
+  color: #0f9b0f;
+  margin-bottom: 10px;
+}
+
+.modal-box h3 {
+  margin-bottom: 8px;
+}
+
+.modal-box p {
+  color: #666;
+  font-size: 14px;
+}
+
+/* RESPONSIVO */
 @media (max-width: 400px) {
 
   .card {
-    padding: 15px;
-    border-radius: 14px;
+    padding: 18px;
+    border-radius: 16px;
   }
 
   .icon {
     font-size: 36px;
   }
 
-  input, button {
+  input,
+  button {
     font-size: 15px;
-    padding: 12px;
+    padding: 13px;
   }
 }
 </style>
@@ -132,12 +224,20 @@ button {
 
   <h2>Enviar Localização</h2>
 
+  <div class="subtitle">
+    Partilhe sua localização para facilitar a entrega
+  </div>
+
   <input 
-  id="ref" 
-  placeholder="Ex: casa azul, portão preto, perto da igreja..."
+    id="ref"
+    placeholder="Ex: casa azul, portão preto, perto da igreja..."
+    autocomplete="off"
   >
 
-  <button onclick="openModal()">Enviar localização</button>
+  <button onclick="openModal()">
+    <i class="fa-brands fa-whatsapp"></i>
+    Enviar localização
+  </button>
 
   <div class="loading" id="loading">
     <p>📡 A obter localização...</p>
@@ -148,12 +248,23 @@ button {
 
 <!-- MODAL -->
 <div class="modal" id="modal">
+
   <div class="modal-box">
-    <i class="fa-solid fa-location-dot" style="font-size:40px;color:#0f9b0f"></i>
+
+    <i class="fa-solid fa-location-dot"></i>
+
     <h3>Permitir localização</h3>
-    <p>Precisamos da tua localização para entregar corretamente.</p>
-    <button onclick="getGPS()">Continuar</button>
+
+    <p>
+      Precisamos da tua localização para entregar corretamente.
+    </p>
+
+    <button onclick="getGPS()">
+      Continuar
+    </button>
+
   </div>
+
 </div>
 
 <script>
@@ -175,30 +286,42 @@ function getGPS() {
 
   document.getElementById("loading").style.display = "block";
 
-  navigator.geolocation.getCurrentPosition(function(pos) {
+  navigator.geolocation.getCurrentPosition(
 
-    let lat = pos.coords.latitude;
-    let lon = pos.coords.longitude;
+    function(pos) {
 
-    let msg =
+      let lat = pos.coords.latitude;
+      let lon = pos.coords.longitude;
+
+      let msg =
 `📍 Entrega:
 https://www.google.com/maps?q=${lat},${lon}
-🏠 Referência: ${ref}`;
 
-    let numero = "244931115654";
+🏠 Referência:
+${ref}`;
 
-    let url = "https://wa.me/" + numero + "?text=" + encodeURIComponent(msg);
+      let numero = "244931115654";
 
-    setTimeout(() => {
-   window.location.href = url;
-    }, 300);
+      let url =
+"https://wa.me/" + numero + "?text=" + encodeURIComponent(msg);
 
-    document.getElementById("loading").style.display = "none";
+      setTimeout(() => {
+        window.location.href = url;
+      }, 300);
 
-  }, function() {
-    document.getElementById("loading").style.display = "none";
-    alert("Permita a localização para continuar");
-  });
+      document.getElementById("loading").style.display = "none";
+
+    },
+
+    function() {
+
+      document.getElementById("loading").style.display = "none";
+
+      alert("Permita a localização para continuar");
+
+    }
+
+  );
 
 }
 
